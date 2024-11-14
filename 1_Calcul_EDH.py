@@ -39,6 +39,19 @@ def connect_bdd():
         print ("Géométrie non récuperée :(")
         print (e3)
         exit(1)
-    return
-connect_bdd()
+    return (gdf_table1, gdf_table2)
+
+def traitement_spatiaux(gdf_table1, gdf_table2):
+    try:
+        merged_gdf = gdf_table1._append(gdf_table2, ignore_index=True)
+        dissolved_gdf = merged_gdf.dissolve()
+        logging.info("Fusion et regroupement réussis")
+    except Exception as e:
+        logging.error("Erreur lors de la fusion et du regroupement")
+        logging.error(e)
+    exit(1)
+    return dissolved_gdf
+
+gdf_table1, gdf_table2 = connect_bdd()
+result = traitement_spatiaux(gdf_table1, gdf_table2)
 

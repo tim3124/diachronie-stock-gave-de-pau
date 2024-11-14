@@ -1,7 +1,6 @@
 import psycopg2
 import geopandas as gpd
 from shapely.ops import unary_union
-import logging
 
 # Connexion à la base de données Analyse Stock Alluvial 
 def connect_bdd():
@@ -19,6 +18,8 @@ def connect_bdd():
         print("Echec de la connexion à la Base de Données")
         print(e)
         exit(1)
+        
+        conn.close()
     
     try: 
     # Requête pour récupérer les données des tables 'BA_2021' et 'BA_2018' dans le schéma 'ba'
@@ -31,8 +32,8 @@ def connect_bdd():
         print (e2)
         exit(1)
     try : 
-        gdf_table1 = gpd.GeoDataFrame.from_postgis(query_table1, conn, geom_col='geom')
-        gdf_table2 = gpd.GeoDataFrame.from_postgis(query_table2, conn, geom_col='geom')
+        gdf_table1 = gpd.read_postgis(query_table1, conn, geom_col='geom')
+        gdf_table2 = gpd.read_postgis(query_table2, conn, geom_col='geom')
 
         print ("Géométrie récuperée !!")
     except Exception as e3 : 
@@ -45,11 +46,8 @@ def traitement_spatiaux(gdf_table1, gdf_table2):
     try:
         merged_gdf = gdf_table1._append(gdf_table2, ignore_index=True)
         dissolved_gdf = merged_gdf.dissolve()
-        logging.info("Fusion et regroupement réussis")
     except Exception as e:
-        logging.error("Erreur lors de la fusion et du regroupement")
-        logging.error(e)
-    exit(1)
+        exit(1)
     return dissolved_gdf
 
 gdf_table1, gdf_table2 = connect_bdd()

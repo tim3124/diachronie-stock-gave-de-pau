@@ -1,16 +1,17 @@
 import psycopg2
 import geopandas as gpd
 from shapely.ops import unary_union
+import config_stock
 
 # Connexion à la base de données Analyse Stock Alluvial 
 def connect_bdd():
     try:
         conn = psycopg2.connect(
-            dbname="Analyse_Stock_Alluvial",
-            user="timmadoulaud",
-            password="Dordogne24@",
-            host="localhost",
-            port="5432"
+            dbname=config_stock.DB_NAME,
+            user=config_stock.DB_USER,
+            password=config_stock.DB_PASSWORD,
+            host=config_stock.DB_HOST,
+            port=config_stock.DB_PORT
     )
 
         print("Connexion à la base de données réussie")

@@ -53,6 +53,9 @@ def traitement_spatiaux(gdf_table1, gdf_table2):
     merged_gdf = gdf_table1._append(gdf_table2, ignore_index=True)
     dissolved_gdf = merged_gdf.dissolve()
     print("Fusion et regroupement réussis")
+    
+    dissolved_gdf['geom'] = dissolved_gdf['geom'].apply(lambda geom: geom.buffer(0))
+    print ("Ton polygone est tout propre ! ")   
 
     exit(1)
     return dissolved_gdf

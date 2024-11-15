@@ -50,6 +50,7 @@ def traitement_spatiaux(gdf_table1, gdf_table2):
     except Exception as e:
         exit(1)
 
+    #Fusion et regroupement des bandes actives
     merged_gdf = gdf_table1._append(gdf_table2, ignore_index=True)
     dissolved_gdf = merged_gdf.dissolve()
     print("Fusion et regroupement réussis")
@@ -57,14 +58,23 @@ def traitement_spatiaux(gdf_table1, gdf_table2):
     dissolved_gdf['geom'] = dissolved_gdf['geom'].apply(lambda geom: geom.buffer(0))
     print ("Ton polygone est tout propre ! ")
     
+    #Création d'une zone tampon
     buffered_gdf = dissolved_gdf.buffer(100)
     print ("Tampon réalisé !")
     
+    #Simplification des contours de l'EDH
     simplified_gdf = buffered_gdf.simplify(tolerance=50, preserve_topology=True)
-    print ("Correction des contours de la bande active ! ")   
+    print ("Correction des contours de la bande active ! ") 
+    
+    #Conversion en geodataframe puis exportation en shapefile
+    
+    simplified_gdf = gpd.GeoDataFrame(geometry=simplified_gdf, crs=gdf_table1.crs)
+    output_file = "etape_1_TEST.shp"
+    simplified_gdf.to_file(output_file, driver='ESRI Shapefile')
+    print ("Création de l'Enveloppe de Divagation Historique crée ! ")
 
     exit(1)
-    return dissolved_gdf, buffered_gdf, simplified_gdf
+    return dissolved_gdf, buffered_gdf, simplified_gdf, output_file
 
 gdf_table1, gdf_table2 = connect_bdd()
 result = traitement_spatiaux(gdf_table1, gdf_table2)

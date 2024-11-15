@@ -49,6 +49,12 @@ def traitement_spatiaux(gdf_table1, gdf_table2):
         dissolved_gdf = merged_gdf.dissolve()
     except Exception as e:
         exit(1)
+
+    merged_gdf = gdf_table1._append(gdf_table2, ignore_index=True)
+    dissolved_gdf = merged_gdf.dissolve()
+    print("Fusion et regroupement réussis")
+
+    exit(1)
     return dissolved_gdf
 
 gdf_table1, gdf_table2 = connect_bdd()

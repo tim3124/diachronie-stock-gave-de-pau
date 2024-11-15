@@ -55,10 +55,13 @@ def traitement_spatiaux(gdf_table1, gdf_table2):
     print("Fusion et regroupement réussis")
     
     dissolved_gdf['geom'] = dissolved_gdf['geom'].apply(lambda geom: geom.buffer(0))
-    print ("Ton polygone est tout propre ! ")   
+    print ("Ton polygone est tout propre ! ")
+    
+    buffered_gdf = dissolved_gdf.buffer(100)
+    print ("Tampon réalisé !")   
 
     exit(1)
-    return dissolved_gdf
+    return dissolved_gdf, buffered_gdf
 
 gdf_table1, gdf_table2 = connect_bdd()
 result = traitement_spatiaux(gdf_table1, gdf_table2)

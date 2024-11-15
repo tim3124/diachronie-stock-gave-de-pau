@@ -58,10 +58,13 @@ def traitement_spatiaux(gdf_table1, gdf_table2):
     print ("Ton polygone est tout propre ! ")
     
     buffered_gdf = dissolved_gdf.buffer(100)
-    print ("Tampon réalisé !")   
+    print ("Tampon réalisé !")
+    
+    simplified_gdf = buffered_gdf.simplify(tolerance=50, preserve_topology=True)
+    print ("Correction des contours de la bande active ! ")   
 
     exit(1)
-    return dissolved_gdf, buffered_gdf
+    return dissolved_gdf, buffered_gdf, simplified_gdf
 
 gdf_table1, gdf_table2 = connect_bdd()
 result = traitement_spatiaux(gdf_table1, gdf_table2)
